@@ -1,0 +1,207 @@
+# 1.WAP using python implementation of any arithematic and quadratic operations
+a = int(input("Enter first number: "))
+b = int(input("Enter second number: "))
+
+print("Addition:", a + b)
+print("Subtraction:", a - b)
+print("Multiplication:", a * b)
+if b != 0:
+    print("Division:", a / b)
+else:
+    print("Division: Cannot divide by zero")
+
+print("\nSolve Quadratic Equation ax^2 + bx + c = 0")
+a = float(input("Enter a: "))
+b = float(input("Enter b: "))
+c = float(input("Enter c: "))
+
+d = b**2 - 4*a*c  # Discriminant
+
+if d > 0:
+    root1 = (-b + d**0.5) / (2*a)
+    root2 = (-b - d**0.5) / (2*a)
+    print("Two Real Roots:", root1, "and", root2)
+elif d == 0:
+    root = -b / (2*a)
+    print("One Real Root:", root)
+else:
+    print("No Real Roots (Complex roots)")
+
+
+
+# 2.Implementation of linear equation.
+## Solve linear equation: ax + b = 0
+
+a = float(input("Enter coefficient a: "))
+b = float(input("Enter coefficient b: "))
+
+if a != 0:
+    x = -b / a
+    print("Solution: x =", x)
+else:
+    if b == 0:
+        print("Infinite solutions (Every value of x satisfies the equation)")
+    else:
+        print("No solution (Equation is inconsistent)")
+
+
+
+# 3. Using any mathematical function or equation to give-graphical representation like star, graph ( more complex implementation can be given promisable marks)
+import matplotlib.pyplot as plt
+import numpy as np
+
+## 1. Sine and Cosine Waves
+x = np.linspace(0, 2*np.pi, 100)
+y_sin = np.sin(x)
+y_cos = np.cos(x)
+
+plt.figure(figsize=(10, 5))
+plt.plot(x, y_sin, label='Sine Wave')
+plt.plot(x, y_cos, label='Cosine Wave')
+plt.title("Sine and Cosine Functions")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+## 2. Parabola (y = x^2)
+x = np.linspace(-10, 10, 100)
+y = x ** 2
+
+plt.figure()
+plt.plot(x, y)
+plt.title("Parabola: y = x^2")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.grid(True)
+plt.show()
+
+## 3. Star Pattern using polar coordinates
+theta = np.linspace(0, 2*np.pi, 1000)
+r = np.abs(np.cos(5 * theta))  # Star shape with 5 points
+
+plt.figure()
+plt.polar(theta, r)
+plt.title("Star Shape Using Polar Coordinates")
+plt.show()
+
+
+
+# 4.wap to implement function
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
+
+def divide(a, b):
+    if b != 0:
+        return a / b
+    else:
+        return "Cannot divide by zero"
+
+x = float(input("Enter first number: "))
+y = float(input("Enter second number: "))
+
+print("Addition:", add(x, y))
+print("Subtraction:", subtract(x, y))
+print("Multiplication:", multiply(x, y))
+print("Division:", divide(x, y))
+
+
+
+# 5. using tinker make any formatted application according to your ideas(tretis, snake, cardblock)
+import tkinter as tk
+import random
+
+# Constants
+WIDTH = 400
+HEIGHT = 400
+SPEED = 100  # Snake speed (milliseconds)
+SIZE = 20    # Snake block size
+
+# Snake game class
+class SnakeGame:
+    def __init__(self, master):
+        self.master = master
+        self.canvas = tk.Canvas(master, width=WIDTH, height=HEIGHT, bg="black")
+        self.canvas.pack()
+
+        self.snake = [(100, 100), (80, 100), (60, 100)]  # Starting snake
+        self.food = self.place_food()
+
+        self.direction = "Right"
+        self.running = True
+
+        self.draw_snake()
+        self.draw_food()
+
+        self.master.bind("<Key>", self.change_direction)
+        self.move_snake()
+
+    def draw_snake(self):
+        self.canvas.delete("snake")
+        for x, y in self.snake:
+            self.canvas.create_rectangle(x, y, x + SIZE, y + SIZE, fill="green", tag="snake")
+
+    def draw_food(self):
+        x, y = self.food
+        self.canvas.create_oval(x, y, x + SIZE, y + SIZE, fill="red", tag="food")
+
+    def place_food(self):
+        x = random.randint(0, (WIDTH - SIZE) // SIZE) * SIZE
+        y = random.randint(0, (HEIGHT - SIZE) // SIZE) * SIZE
+        return (x, y)
+
+    def move_snake(self):
+        if not self.running:
+            return
+
+        head_x, head_y = self.snake[0]
+        if self.direction == "Right":
+            head_x += SIZE
+        elif self.direction == "Left":
+            head_x -= SIZE
+        elif self.direction == "Up":
+            head_y -= SIZE
+        elif self.direction == "Down":
+            head_y += SIZE
+
+        new_head = (head_x, head_y)
+
+        # Check for collisions
+        if (
+            head_x < 0 or head_x >= WIDTH or
+            head_y < 0 or head_y >= HEIGHT or
+            new_head in self.snake
+        ):
+            self.canvas.create_text(WIDTH/2, HEIGHT/2, text="Game Over", fill="white", font=("Arial", 24))
+            self.running = False
+            return
+
+        self.snake.insert(0, new_head)
+
+        if new_head == self.food:
+            self.food = self.place_food()
+            self.canvas.delete("food")
+            self.draw_food()
+        else:
+            self.snake.pop()
+
+        self.draw_snake()
+        self.master.after(SPEED, self.move_snake)
+
+    def change_direction(self, event):
+        key = event.keysym
+        opposites = {"Up": "Down", "Down": "Up", "Left": "Right", "Right": "Left"}
+        if key in opposites and opposites[key] != self.direction:
+            self.direction = key
+
+root = tk.Tk()
+root.title("Snake Game - Tkinter")
+game = SnakeGame(root)
+root.mainloop()
